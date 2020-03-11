@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react'
-import RangingButton from './RangingButton'
-import PhaseButton from './PhaseButton'
-import RestButton from './RestButton'
 import RigidButton from './RigidButton'
 import Header from './header'
 import { shutUp, speak } from './speaker'
 
 const countdownStart = 3
+const restMaxTime = 3
+const courseMaxTime = 3
 
 function leftPad(value) {
   if (value < 10) {
@@ -64,13 +63,12 @@ function App() {
   }, [rangingStarted])
   function startRanging() {
     resetAll()
-    speak('start-ranging').then(() => {
-      setRangingStarted(now())
-    })
+    speak('start-ranging')
+    setRangingStarted(now())
   }
   function stopRanging() {
     speak('stop-ranging').then(() => {
-      setRangingStarted(0)
+      resetAll()
     })
   }
 
@@ -103,12 +101,13 @@ function App() {
     function tick() {
       const time = Math.floor((now() - courseStarted) / 1000)
       setCourseTime(time)
-      if (time >= 5) {
+      if (time >= courseMaxTime) {
         clearInterval(timer)
         speak('stop-fire-discharge').then(() => {
           setCourseStarted(0)
           if (courseNo === 1) {
-            speak('rest').then(() => setRestStarted(now()))
+            speak('rest')
+            setRestStarted(now())
           }
         })
       }
@@ -121,19 +120,21 @@ function App() {
   }, [courseStarted, courseNo])
   function startFirstCourse() {
     resetAll()
-    speak('charge').then(() => {
-      setCourseNo(1)
-      setCountdownStarted(now())
-    })
+    speak('charge')
+    setCourseNo(1)
+    setCountdownStarted(now())
   }
   function startSecondCourse() {
     resetAll()
-    speak('charge').then(() => {
-      setCourseNo(2)
-      setCountdownStarted(now())
+    speak('charge')
+    setCourseNo(2)
+    setCountdownStarted(now())
+  }
+  function stopCourse() {
+    speak('stop-fire-discharge').then(() => {
+      resetAll()
     })
   }
-
   useEffect(() => {
     if (!restStarted) {
       return
@@ -141,7 +142,7 @@ function App() {
     function tick() {
       const time = Math.floor((now() - restStarted) / 1000)
       setRestTime(time)
-      if (time >= 3) {
+      if (time >= restMaxTime) {
         clearInterval(timer)
         speak('attention').then(() => {
           setRestStarted(0)
@@ -170,24 +171,6 @@ function App() {
     setRestStarted(0)
   }
 
-  function rest() {
-    const button = document.getElementById('rest-button')
-    var event = new MouseEvent('dblclick', {
-      view: window,
-      bubbles: true,
-      cancelable: true
-    })
-    button.dispatchEvent(event)
-  }
-  function stage2() {
-    const button = document.getElementById('stage2-button')
-    var event = new MouseEvent('dblclick', {
-      view: window,
-      bubbles: true,
-      cancelable: true
-    })
-    button.dispatchEvent(event)
-  }
   const buttons = {
     'start-ranging': 'Огонь пристрелка',
     'stop-ranging': 'Стоп пристрелка',
@@ -213,6 +196,7 @@ function App() {
   return (
     <div className="App">
       <Header />
+      <div className="section">Отсчеты</div>
 
       <RigidButton active={rangingStarted} caption="Пристрелка" onClick={startRanging} onCancel={stopRanging}>
         <div className="indicator">
@@ -223,7 +207,7 @@ function App() {
         active={courseNo === 1 && (countdownStarted || courseStarted)}
         caption="Зачет: первая полусерия"
         onClick={startFirstCourse}
-        onCancel={resetAll}
+        onCancel={stopCourse}
       >
         {countdownStarted ? <div className="indicator">Приготовиться: {countdownTime}</div> : null}
         {courseStarted ? (
@@ -239,7 +223,7 @@ function App() {
         active={courseNo === 2 && (countdownStarted || courseStarted)}
         caption="Зачет: вторая полусерия"
         onClick={startSecondCourse}
-        onCancel={resetAll}
+        onCancel={stopCourse}
       >
         {countdownStarted ? <div className="indicator">Приготовиться: {countdownTime}</div> : null}
         {courseStarted ? (
@@ -248,25 +232,8 @@ function App() {
           </div>
         ) : null}
       </RigidButton>
-
-      <RangingButton />
-      <div className="section">Отсчет</div>
-      <PhaseButton caption="Первая полусерия" id="stage1-button" onComplete={rest} />
-      <RestButton id="rest-button" onComplete={stage2} />
-      <PhaseButton caption="Вторая полусерия" id="stage2-button" />
       <div className="section">Команды</div>
       {trackButtons}
-      {/*
-      <SpeakerButton track="start-ranging" caption="Огонь пристрелка!" />
-      <SpeakerButton track="stop-ranging" caption="Стоп пристрелка!" />
-      <SpeakerButton track="move-on" caption="Стрелки на линию огня!" />
-      <SpeakerButton track="charge" caption="Заряжай!" />
-      <SpeakerButton track="fire" caption="Огонь!" />
-      <SpeakerButton track="stop-fire-discharge" caption="Стоп огонь, разрядить оружие!" />
-      <SpeakerButton track="rest" caption="Время отдыха!" />
-      <SpeakerButton track="safe-free" caption="Рубеж свободен!" />
-      <SpeakerButton track="fill-up" caption="Заправка воздухом!" />
-      */}
     </div>
   )
 }
