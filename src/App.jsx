@@ -3,9 +3,9 @@ import RigidButton from './RigidButton'
 import Header from './header'
 import { shutUp, speak } from './speaker'
 
-const countdownStart = 3
-const restMaxTime = 3
-const courseMaxTime = 3
+const countdownStart = 10
+const restMaxTime = 30
+const courseMaxTime = 150
 
 function leftPad(value) {
   if (value < 10) {
@@ -14,6 +14,7 @@ function leftPad(value) {
     return value
   }
 }
+
 function minutes(secs) {
   return Math.floor(secs / 60) % 60
 }
@@ -24,6 +25,13 @@ function seconds(secs) {
 function now() {
   return new Date().valueOf()
 }
+
+function setTitle(title, time) {
+  if (title) {
+    document.title = `${title} [${time}]`
+  } else document.title = 'S-Timer'
+}
+
 function App() {
   const [track, setTrack] = useState('')
   const [rangingStarted, setRangingStarted] = useState(0)
@@ -38,6 +46,7 @@ function App() {
   const [restTime, setRestTime] = useState(0)
 
   function resetAll() {
+    setTitle('')
     setTrack('')
     shutUp()
     setRangingStarted(0)
@@ -52,8 +61,9 @@ function App() {
       return
     }
     function tick() {
-      const ms = now() - rangingStarted
-      setRangingTime(Math.floor(ms / 1000))
+      const time = Math.floor((now() - rangingStarted) / 1000)
+      setRangingTime(time)
+      setTitle('Пристрелка', leftPad(minutes(time)) + ':' + leftPad(seconds(time)))
     }
     const timer = setInterval(tick, 100)
     tick()
@@ -61,15 +71,16 @@ function App() {
       clearInterval(timer)
     }
   }, [rangingStarted])
+
   function startRanging() {
     resetAll()
     speak('start-ranging')
     setRangingStarted(now())
   }
+
   function stopRanging() {
-    speak('stop-ranging').then(() => {
-      resetAll()
-    })
+    resetAll()
+    speak('stop-ranging')
   }
 
   useEffect(() => {
@@ -79,6 +90,7 @@ function App() {
     function tick() {
       const time = countdownStart - Math.floor((now() - countdownStarted) / 1000)
       setCountdownTime(time)
+      setTitle('Приготовиться', time)
       if (time <= 0) {
         clearInterval(timer)
         speak('fire').then(() => {
@@ -101,6 +113,21 @@ function App() {
     function tick() {
       const time = Math.floor((now() - courseStarted) / 1000)
       setCourseTime(time)
+      if (courseNo === 1) {
+        setTitle('Полусерия 1', leftPad(minutes(time)) + ':' + leftPad(seconds(time)))
+      } else {
+        setTitle('Полусерия 2', leftPad(minutes(time)) + ':' + leftPad(seconds(time)))
+      }
+
+      if (time === 60) {
+        speak('1m')
+      }
+      if (time === 120) {
+        speak('2m')
+      }
+      if (time === 140) {
+        speak('10s')
+      }
       if (time >= courseMaxTime) {
         clearInterval(timer)
         speak('stop-fire-discharge').then(() => {
@@ -108,6 +135,8 @@ function App() {
           if (courseNo === 1) {
             speak('rest')
             setRestStarted(now())
+          } else {
+            resetAll()
           }
         })
       }
@@ -118,23 +147,26 @@ function App() {
       clearInterval(timer)
     }
   }, [courseStarted, courseNo])
+
   function startFirstCourse() {
     resetAll()
     speak('charge')
     setCourseNo(1)
     setCountdownStarted(now())
   }
+
   function startSecondCourse() {
     resetAll()
     speak('charge')
     setCourseNo(2)
     setCountdownStarted(now())
   }
+
   function stopCourse() {
-    speak('stop-fire-discharge').then(() => {
-      resetAll()
-    })
+    resetAll()
+    speak('stop-fire-discharge')
   }
+
   useEffect(() => {
     if (!restStarted) {
       return
@@ -142,6 +174,7 @@ function App() {
     function tick() {
       const time = Math.floor((now() - restStarted) / 1000)
       setRestTime(time)
+      setTitle('Отдых', leftPad(minutes(time)) + ':' + leftPad(seconds(time)))
       if (time >= restMaxTime) {
         clearInterval(timer)
         speak('attention').then(() => {
@@ -217,7 +250,9 @@ function App() {
         ) : null}
       </RigidButton>
       <RigidButton active={restStarted} caption="Отдых" onClick={startRest} onCancel={stopRest}>
-        <div className="indicator">{restTime}</div>
+        <div className="indicator">
+          {leftPad(minutes(restTime))}:{leftPad(seconds(restTime))}
+        </div>
       </RigidButton>
       <RigidButton
         active={courseNo === 2 && (countdownStarted || courseStarted)}

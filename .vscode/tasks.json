@@ -13,6 +13,11 @@
       "script": "build",
       "group": "build",
       "problemMatcher": []
+    },
+    {
+      "type": "npm",
+      "script": "deploy",
+      "problemMatcher": []
     }
   ]
 }
