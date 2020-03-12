@@ -218,8 +218,10 @@ function App() {
   const trackButtons = Object.entries(buttons).map(([key, value]) => {
     function onClick() {
       resetAll()
-      setTrack(key)
-      speak(key).then(() => setTrack(''))
+      setTrack(() => {
+        speak(key).then(() => setTrack(''))
+        return key
+      })
     }
     function onCancel() {
       resetAll()
