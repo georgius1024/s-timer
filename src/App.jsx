@@ -6,6 +6,7 @@ import { shutUp, speak } from './speaker'
 const countdownStart = 10
 const restMaxTime = 30
 const courseMaxTime = 150
+const rangingMaxTime = 600
 
 function leftPad(value) {
   if (value < 10) {
@@ -64,6 +65,9 @@ function App() {
       const time = Math.floor((now() - rangingStarted) / 1000)
       setRangingTime(time)
       setTitle('Пристрелка', leftPad(minutes(time)) + ':' + leftPad(seconds(time)))
+      if (time >= rangingMaxTime) {
+        stopRanging()
+      }
     }
     const timer = setInterval(tick, 100)
     tick()
@@ -179,12 +183,10 @@ function App() {
         clearInterval(timer)
         speak('attention').then(() => {
           setRestStarted(0)
-          if (courseNo === 1) {
-            speak('charge').then(() => {
-              setCourseNo(2)
-              setCountdownStarted(now())
-            })
-          }
+          speak('charge').then(() => {
+            setCourseNo(2)
+            setCountdownStarted(now())
+          })
         })
       }
     }
