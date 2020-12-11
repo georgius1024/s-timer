@@ -74,7 +74,7 @@ function App() {
     return () => {
       clearInterval(timer)
     }
-  }, [rangingStarted])
+  }, [rangingStarted]) // eslint-disable-line
 
   function startRanging() {
     resetAll()
