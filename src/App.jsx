@@ -3,7 +3,7 @@ import RigidButton from './RigidButton'
 import Header from './header'
 import { shutUp, speak } from './speaker'
 
-const countdownStart = 10
+const countdownStart = 30
 const restMaxTime = 30
 const courseMaxTime = 150
 const rangingMaxTime = 600
