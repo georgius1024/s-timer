@@ -11,6 +11,8 @@ body {
   -moz-osx-font-smoothing: grayscale;
   font-size: 16px;
   display: flex;
+  width: 100vw;
+  height: 100vh;
   justify-content: center;
   align-items: center;
   background-image: url('./assets/background.jpg');
@@ -20,14 +22,43 @@ body {
 .App {
   width: 400px;
   background-color: #eee;
-  height: 100vh;
   display: flex;
   flex-direction: column;
-  align-items: center;
   @media screen and (max-width: 400px) {
     width: 100vw;
   }
+  @media screen and (min-width: 600px) {
+    width: 600px;
+  }
+  @media screen and (min-width: 800px) {
+    width: 800px;
+  }
+
   user-select: none;
+  .row {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    .column-1,
+    .column-2 {
+      display: flex;
+      flex-direction: column;
+    }
+    @media screen and (min-width: 600px) {
+      flex-direction: row;
+      .column-1,
+      .column-2 {
+        width: 50%;
+        padding: 20px;
+      }
+      .column-1 {
+        padding-right: 10px;
+      }
+      .column-2 {
+        padding-left: 10px;
+      }
+    }
+  }
 }
 .header {
   cursor: default;

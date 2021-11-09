@@ -43,8 +43,11 @@ function App() {
   const [courseTime, setCourseTime] = useState(0)
   const [courseNo, setCourseNo] = useState(0)
 
-  const [restStarted, setRestStarted] = useState(0)
-  const [restTime, setRestTime] = useState(0)
+  const [intermediateRestStarted, setIntermediateRestStarted] = useState(0)
+  const [intermediateRestTime, setIntermediateRestTime] = useState(0)
+
+  const [finalRestStarted, setFinalRestStarted] = useState(0)
+  const [finalRestTime, setFinalRestTime] = useState(0)
 
   function resetAll() {
     setTitle('')
@@ -52,7 +55,8 @@ function App() {
     shutUp()
     setRangingStarted(0)
     setCountdownStarted(0)
-    setRestStarted(0)
+    setIntermediateRestStarted(0)
+    setFinalRestStarted(0)
     setCourseStarted(0)
     setCourseNo(0)
   }
@@ -138,9 +142,10 @@ function App() {
           setCourseStarted(0)
           if (courseNo === 1) {
             speak('rest')
-            setRestStarted(now())
+            setIntermediateRestStarted(now())
           } else {
-            resetAll()
+            speak('rest')
+            setFinalRestStarted(now())
           }
         })
       }
@@ -172,17 +177,17 @@ function App() {
   }
 
   useEffect(() => {
-    if (!restStarted) {
+    if (!intermediateRestStarted) {
       return
     }
     function tick() {
-      const time = Math.floor((now() - restStarted) / 1000)
-      setRestTime(time)
+      const time = Math.floor((now() - intermediateRestStarted) / 1000)
+      setIntermediateRestTime(time)
       setTitle('Отдых', leftPad(minutes(time)) + ':' + leftPad(seconds(time)))
       if (time >= restMaxTime) {
         clearInterval(timer)
         speak('attention').then(() => {
-          setRestStarted(0)
+          setIntermediateRestStarted(0)
           speak('charge').then(() => {
             setCourseNo(2)
             setCountdownStarted(now())
@@ -195,15 +200,47 @@ function App() {
     return () => {
       clearInterval(timer)
     }
-  }, [restStarted, courseNo])
+  }, [intermediateRestStarted, courseNo])
+  useEffect(() => {
+    if (!finalRestStarted) {
+      return
+    }
+    function tick() {
+      const time = Math.floor((now() - finalRestStarted) / 1000)
+      setFinalRestTime(time)
+      setTitle('Отдых', leftPad(minutes(time)) + ':' + leftPad(seconds(time)))
+      if (time >= restMaxTime) {
+        clearInterval(timer)
+        speak('attention').then(() => {
+          setFinalRestStarted(0)
+        })
+      }
+    }
+    const timer = setInterval(tick, 100)
+    tick()
+    return () => {
+      clearInterval(timer)
+    }
+  }, [finalRestStarted, courseNo])
+
   function startRest() {
     resetAll()
     speak('rest')
-    setRestStarted(now())
+    setIntermediateRestStarted(now())
   }
   function stopRest() {
     speak('attention')
-    setRestStarted(0)
+    setIntermediateRestStarted(0)
+  }
+
+  function startFinalRest() {
+    resetAll()
+    speak('rest')
+    setFinalRestStarted(now())
+  }
+  function stopFinalRest() {
+    speak('attention')
+    setFinalRestStarted(0)
   }
 
   const buttons = {
@@ -233,46 +270,67 @@ function App() {
   return (
     <div className="App">
       <Header />
-      <div className="section">Отсчеты</div>
+      <div className="row">
+        <div className="column-1">
+          <div className="section">Отсчеты</div>
 
-      <RigidButton active={rangingStarted} caption="Пристрелка" onClick={startRanging} onCancel={stopRanging}>
-        <div className="indicator">
-          {leftPad(minutes(rangingTime))}:{leftPad(seconds(rangingTime))}
+          <RigidButton active={rangingStarted} caption="Пристрелка" onClick={startRanging} onCancel={stopRanging}>
+            <div className="indicator">
+              {leftPad(minutes(rangingTime))}:{leftPad(seconds(rangingTime))}
+            </div>
+          </RigidButton>
+          <RigidButton
+            active={courseNo === 1 && (countdownStarted || courseStarted)}
+            caption="Зачет: первая полусерия"
+            onClick={startFirstCourse}
+            onCancel={stopCourse}
+          >
+            {countdownStarted ? <div className="indicator">Приготовиться: {countdownTime}</div> : null}
+            {courseStarted ? (
+              <div className="indicator">
+                {leftPad(minutes(courseTime))}:{leftPad(seconds(courseTime))}
+              </div>
+            ) : null}
+          </RigidButton>
+          <RigidButton
+            active={intermediateRestStarted}
+            caption="Отдых между полусериями"
+            onClick={startRest}
+            onCancel={stopRest}
+          >
+            <div className="indicator">
+              {leftPad(minutes(intermediateRestTime))}:{leftPad(seconds(intermediateRestTime))}
+            </div>
+          </RigidButton>
+          <RigidButton
+            active={courseNo === 2 && (countdownStarted || courseStarted)}
+            caption="Зачет: вторая полусерия"
+            onClick={startSecondCourse}
+            onCancel={stopCourse}
+          >
+            {countdownStarted ? <div className="indicator">Приготовиться: {countdownTime}</div> : null}
+            {courseStarted ? (
+              <div className="indicator">
+                {leftPad(minutes(courseTime))}:{leftPad(seconds(courseTime))}
+              </div>
+            ) : null}
+          </RigidButton>
+          <RigidButton
+            active={finalRestStarted}
+            caption="Отдых после полной серии"
+            onClick={startFinalRest}
+            onCancel={stopFinalRest}
+          >
+            <div className="indicator">
+              {leftPad(minutes(finalRestTime))}:{leftPad(seconds(finalRestTime))}
+            </div>
+          </RigidButton>
         </div>
-      </RigidButton>
-      <RigidButton
-        active={courseNo === 1 && (countdownStarted || courseStarted)}
-        caption="Зачет: первая полусерия"
-        onClick={startFirstCourse}
-        onCancel={stopCourse}
-      >
-        {countdownStarted ? <div className="indicator">Приготовиться: {countdownTime}</div> : null}
-        {courseStarted ? (
-          <div className="indicator">
-            {leftPad(minutes(courseTime))}:{leftPad(seconds(courseTime))}
-          </div>
-        ) : null}
-      </RigidButton>
-      <RigidButton active={restStarted} caption="Отдых" onClick={startRest} onCancel={stopRest}>
-        <div className="indicator">
-          {leftPad(minutes(restTime))}:{leftPad(seconds(restTime))}
+        <div className="column-2">
+          <div className="section">Команды</div>
+          {trackButtons}
         </div>
-      </RigidButton>
-      <RigidButton
-        active={courseNo === 2 && (countdownStarted || courseStarted)}
-        caption="Зачет: вторая полусерия"
-        onClick={startSecondCourse}
-        onCancel={stopCourse}
-      >
-        {countdownStarted ? <div className="indicator">Приготовиться: {countdownTime}</div> : null}
-        {courseStarted ? (
-          <div className="indicator">
-            {leftPad(minutes(courseTime))}:{leftPad(seconds(courseTime))}
-          </div>
-        ) : null}
-      </RigidButton>
-      <div className="section">Команды</div>
-      {trackButtons}
+      </div>
     </div>
   )
 }
