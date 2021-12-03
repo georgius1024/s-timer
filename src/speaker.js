@@ -11,10 +11,11 @@ const tracks = [
   'safe-free',
   'start-ranging',
   'stop-ranging',
-  'attention'
+  'attention',
+  'whistle'
 ]
 function shutUp() {
-  tracks.forEach(track => {
+  tracks.forEach((track) => {
     const audio = document.getElementById('track_' + track)
     audio['pause']()
     audio['currentTime'] = 0
@@ -30,7 +31,7 @@ function speak(phrase) {
   })
 }
 function preload() {
-  tracks.forEach(track => {
+  tracks.forEach((track) => {
     const audio = document.createElement('audio')
     audio.setAttribute('id', 'track_' + track)
     audio['style'].display = 'none'
