@@ -1,0 +1,60 @@
+[
+  {
+    "type": "shutup"
+  },
+  {
+    "type": "message",
+    "payload": "Стрелки на линию огня!"
+  },
+  {
+    "type": "command",
+    "payload": "move-on"
+  },
+  {
+    "type": "delay",
+    "payload": 3000
+  },
+  {
+    "type": "message",
+    "payload": "Внимание!"
+  },
+  {
+    "type": "command",
+    "payload": "attention"
+  },
+  {
+    "type": "message",
+    "payload": "Начало пристрелки"
+  },
+  {
+    "type": "command",
+    "payload": "start-ranging"
+  },
+  {
+    "type": "command",
+    "payload": "whistle"
+  },
+  {
+    "type": "message",
+    "payload": "Пристрелка"
+  },
+  {
+    "type": "delay",
+    "payload": 6000
+  },
+  {
+    "type": "message",
+    "payload": "Конец пристрелки"
+  },
+  {
+    "type": "command",
+    "payload": "whistle"
+  },
+  {
+    "type": "command",
+    "payload": "stop-ranging"
+  },
+  {
+    "type": "exit"
+  }
+]

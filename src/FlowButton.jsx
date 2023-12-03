@@ -13,49 +13,20 @@ const formatTime = (ms) => {
   return `${leftPad(minutes)}:${leftPad(seconds)}`
 }
 
-function FlowButton({ id, caption, flow, onTerminate }) {
+const rehydrateFlatFlow = (flow) => {
+  return flow.map((node, index) => {
+    const base = index + 100
+    return { ...node, id: base, parent: index > 0 ? base - 1 : null, next: base + 1 }
+  })
+}
+
+function FlowButton({ id, caption, flow, onAbort }) {
   const [show, setShow] = useState(false)
   const [message, setMessage] = useState('')
   const [passed, setPassed] = useState(0)
-  const [paused, setPaused] = useState(0)
+  const [paused, setPaused] = useState(false)
   const [controller, setController] = useState(null)
-  const rehydrateFlatFlow = (flow) => {
-    return flow.map((node, index) => {
-      const base = index + 100
-      return { ...node, id: base, parent: index > 0 ? base - 1 : null, next: base + 1 }
-    })
-  }
-  const testFlow = [
-    {
-      type: 'shutup'
-    },
-    {
-      type: 'message',
-      payload: 'Начало пристрелки'
-    },
-    {
-      type: 'command',
-      payload: 'start-ranging'
-    },
-    {
-      type: 'delay',
-      payload: 2000
-    },
-    {
-      type: 'message',
-      payload: 'Конец пристрелки'
-    },
-    {
-      type: 'command',
-      payload: 'stop-ranging'
-    },
-    {
-      type: 'exit'
-    }
-  ]
-
   const start = () => {
-    setController(new Controller(rehydrateFlatFlow(testFlow)))
     setShow(true)
   }
 
@@ -64,39 +35,56 @@ function FlowButton({ id, caption, flow, onTerminate }) {
       stop()
     }
   }
+
   const stop = () => {
     controller.terminate()
-    setShow(false)
+    if (onAbort && typeof onAbort === 'string') {
+      shutUp()
+      speak(onAbort)
+    }
   }
+
   const pause = () => {
     setPaused((paused) => !paused)
   }
+
   useEffect(() => {
     if (paused) {
       controller && controller.pause()
     } else {
-      controller && controller.run()
+      controller && setImmediate(() => controller.run())
     }
-  }, [paused])
+  }, [paused, controller])
 
   useEffect(() => {
     if (controller) {
       controller.on('terminated', () => {
-        setTimeout(() => {
-          shutUp()
-          setShow(false)
-          onTerminate && onTerminate()
-        }, 200)
+        // console.log('terminated')
+        setShow(false)
       })
+      // controller.on('node', (node) => console.log(node.type))
+      // controller.on('run', () => console.log('run'))
       controller.on('message', setMessage)
       controller.on('shutup', shutUp)
-      controller.on('command', speak)
-      controller.on('timer', (status) => {
-        setPassed(status.passed)
+      controller.on('command', (command, next) => {
+        speak(command).then(next)
       })
-      controller.run()
+      controller.on('timer', ({ passed }) => {
+        setPassed(passed)
+      })
     }
   }, [controller])
+
+  useEffect(() => {
+    if (show) {
+      setMessage('')
+      setPassed(0)
+      setController(new Controller(rehydrateFlatFlow(flow)))
+      setPaused(false)
+    } else {
+      setController(null)
+    }
+  }, [show, flow])
 
   return (
     <>
@@ -104,7 +92,7 @@ function FlowButton({ id, caption, flow, onTerminate }) {
         <div className="flow-control">
           <div className="display">{message}</div>
           <div className="display">{formatTime(passed)}</div>
-          <button className="rigid-button pause-button" onClick={pause}>
+          <button className={classNames('rigid-button pause-button', { active: paused })} onClick={pause}>
             {paused ? 'Продолжить' : 'Пауза'}
           </button>
         </div>

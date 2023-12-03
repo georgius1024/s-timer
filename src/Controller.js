@@ -30,8 +30,7 @@ function Controller(flow = [], timerInterval = 100) {
         return nextNode()
       case 'command':
         this.command = node.payload
-        bus.emit('command', this.command)
-        return nextNode()
+        return bus.emit('command', this.command, nextNode)
       case 'exit':
         return this.terminate()
       default:
@@ -42,23 +41,24 @@ function Controller(flow = [], timerInterval = 100) {
   const nextNode = () => {
     const next = this.currentNode.next && flow.find((e) => e.id === this.currentNode.next)
     if (next) {
-      startNode(next)
+      if (this.paused()) {
+        this.resume = next
+      } else {
+        startNode(next)
+      }
     } else {
       this.terminate()
     }
   }
 
   bus.on('tick', () => {
-    if (!this.currentNode) {
-      startNode(flow.find((e) => !e.parent))
-    }
     if (this.left) {
       const delta = new Date().valueOf() - this.lastTick
       this.left -= delta
       timerEvent()
-    }
-    if (!this.left || this.left <= 0) {
-      nextNode()
+      if (this.left <= 0) {
+        nextNode()
+      }
     }
     this.lastTick = new Date().valueOf()
   })
@@ -79,6 +79,14 @@ function Controller(flow = [], timerInterval = 100) {
       bus.emit('tick')
     }, timerInterval)
     bus.emit('run')
+    if (!this.currentNode) {
+      startNode(flow.find((e) => !e.parent))
+    } else {
+      if (this.resume) {
+        startNode(this.resume)
+        delete this.resume
+      }
+    }
   }
   this.on = (event, callback) => bus.on(event, callback)
   this.off = (event, callback) => bus.off(event, callback)

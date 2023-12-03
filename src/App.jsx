@@ -4,7 +4,8 @@ import RigidButton from './RigidButton'
 import FlowButton from './FlowButton'
 import Header from './header'
 import { shutUp, speak } from './speaker'
-
+import rangingSequence from './flows/ranging.json'
+import courseSequence from './flows/course.json'
 const countdownStart = 30
 const restMaxTime = 30
 const courseMaxTime = 150
@@ -277,8 +278,11 @@ function App() {
       <Header />
       <div className="row">
         <div className="column-1">
+          <div className="section">Отсчеты новые</div>
+          <FlowButton id="rng" flow={rangingSequence} caption={'Пристрелка'} onAbort={'stop-ranging'} />
+          <FlowButton id="core" flow={courseSequence} caption={'Две полусерии'} onAbort={'stop-fire-discharge'} />
+
           <div className="section">Отсчеты</div>
-          <FlowButton id="core" caption={'Test flow controller'} onTerminate={() => speak('attention')} />
           <RigidButton active={rangingStarted} caption="Пристрелка" onClick={startRanging} onCancel={stopRanging}>
             <div className="indicator">
               {leftPad(minutes(rangingTime))}:{leftPad(seconds(rangingTime))}
