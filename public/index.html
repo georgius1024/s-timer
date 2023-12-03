@@ -37,25 +37,25 @@
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
     <script>
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', function () {
-          navigator.serviceWorker
-            .register('/worker.js')
-            .then(
-              function (registration) {
-                console.log('Worker registration successful', registration.scope)
-              },
-              function (error) {
-                console.log('Worker registration failed', error)
-              }
-            )
-            .catch(function (error) {
-              console.log(error)
-            })
-        })
-      } else {
-        console.log('Service Worker is not supported by browser.')
-      }
+      // if ('serviceWorker' in navigator) {
+      //   window.addEventListener('load', function () {
+      //     navigator.serviceWorker
+      //       .register('/worker.js')
+      //       .then(
+      //         function (registration) {
+      //           console.log('Worker registration successful', registration.scope)
+      //         },
+      //         function (error) {
+      //           console.log('Worker registration failed', error)
+      //         }
+      //       )
+      //       .catch(function (error) {
+      //         console.log(error)
+      //       })
+      //   })
+      // } else {
+      //   console.log('Service Worker is not supported by browser.')
+      // }
     </script>
   </body>
 </html>

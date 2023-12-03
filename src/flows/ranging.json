@@ -12,7 +12,7 @@
   },
   {
     "type": "delay",
-    "payload": 600000
+    "payload": 30000
   },
   {
     "type": "message",
@@ -40,7 +40,7 @@
   },
   {
     "type": "delay",
-    "payload": 6000
+    "payload": 600000
   },
   {
     "type": "message",
