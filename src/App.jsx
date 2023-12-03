@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react'
+
 import RigidButton from './RigidButton'
+import FlowButton from './FlowButton'
 import Header from './header'
 import { shutUp, speak } from './speaker'
 
@@ -273,7 +275,7 @@ function App() {
       <div className="row">
         <div className="column-1">
           <div className="section">Отсчеты</div>
-
+          <FlowButton id="core" caption={'Test flow controller'} onTerminate={() => speak('attention')} />
           <RigidButton active={rangingStarted} caption="Пристрелка" onClick={startRanging} onCancel={stopRanging}>
             <div className="indicator">
               {leftPad(minutes(rangingTime))}:{leftPad(seconds(rangingTime))}

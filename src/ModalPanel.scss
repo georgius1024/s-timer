@@ -1,0 +1,50 @@
+.modal-panel {
+  .background {
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    transform: translateY(-100vh);
+    z-index: 7;
+    opacity: 0;
+    transition: opacity 200ms ease;
+
+    &.show {
+      backdrop-filter: saturate(10%) blur(5px);
+      transform: translateY(0);
+      opacity: 1;
+      .modal-panel {
+        transform: translateY(0);
+        border-top: 1px solid rgba(0, 0, 0, 0.1);
+        border-left: 1px solid rgba(0, 0, 0, 0.1);
+        box-shadow: 4px 6px 2px rgba(0, 0, 0, 0.32);
+      }
+    }
+  }
+  .modal-panel {
+    transition: transform 200ms ease;
+    display: block;
+    background-color: #ffffff;
+    padding: 32px;
+    outline: none;
+    transform: translateY(-100vh);
+    &.close {
+      padding-top: 80px;
+    }
+    .close-control {
+      position: absolute;
+      top: 16px;
+      right: 32px;
+      width: 32px;
+      height: 32px;
+      font-size: 32px;
+      color: currentColor;
+      cursor: pointer;
+    }
+  }
+}
