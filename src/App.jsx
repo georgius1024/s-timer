@@ -104,6 +104,7 @@ function App() {
       if (time <= 0) {
         clearInterval(timer)
         speak('fire').then(() => {
+          speak('whistle')
           setCountdownStarted(0)
           setCourseStarted(now())
         })
@@ -140,16 +141,18 @@ function App() {
       }
       if (time >= courseMaxTime) {
         clearInterval(timer)
-        speak('stop-fire-discharge').then(() => {
-          setCourseStarted(0)
-          if (courseNo === 1) {
-            speak('rest')
-            setIntermediateRestStarted(now())
-          } else {
-            speak('rest')
-            setFinalRestStarted(now())
-          }
-        })
+        speak('whistle').then(
+          speak('stop-fire-discharge').then(() => {
+            setCourseStarted(0)
+            if (courseNo === 1) {
+              speak('rest')
+              setIntermediateRestStarted(now())
+            } else {
+              speak('rest')
+              setFinalRestStarted(now())
+            }
+          })
+        )
       }
     }
     const timer = setInterval(tick, 100)
