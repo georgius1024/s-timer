@@ -12,7 +12,7 @@
   },
   {
     "type": "delay",
-    "payload": 3000
+    "payload": 60000
   },
   {
     "type": "message",
@@ -32,7 +32,7 @@
   },
   {
     "type": "delay",
-    "payload": 3000
+    "payload": 30000
   },
   {
     "type": "message",
@@ -48,7 +48,7 @@
   },
   {
     "type": "delay",
-    "payload": 3000
+    "payload": 150000
   },
   {
     "type": "command",
@@ -68,7 +68,7 @@
   },
   {
     "type": "delay",
-    "payload": 3000
+    "payload": 30000
   },
   {
     "type": "message",
@@ -87,6 +87,10 @@
     "payload": "charge"
   },
   {
+    "type": "delay",
+    "payload": 30000
+  },
+  {
     "type": "message",
     "payload": "Вторая полусерия - огонь!"
   },
@@ -100,7 +104,7 @@
   },
   {
     "type": "delay",
-    "payload": 3000
+    "payload": 1500000
   },
   {
     "type": "command",
