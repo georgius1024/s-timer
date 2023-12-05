@@ -1,0 +1,124 @@
+[
+  {
+    "type": "shutup"
+  },
+  {
+    "type": "message",
+    "payload": "Стрелки на линию огня!"
+  },
+  {
+    "type": "command",
+    "payload": "move-on"
+  },
+  {
+    "type": "delay",
+    "payload": 60000
+  },
+  {
+    "type": "message",
+    "payload": "Внимание!"
+  },
+  {
+    "type": "command",
+    "payload": "attention"
+  },
+  {
+    "type": "message",
+    "payload": "Заряжай!"
+  },
+  {
+    "type": "command",
+    "payload": "charge"
+  },
+  {
+    "type": "delay",
+    "payload": 30000
+  },
+  {
+    "type": "message",
+    "payload": "Первая полусерия - огонь!"
+  },
+  {
+    "type": "command",
+    "payload": "fire"
+  },
+  {
+    "type": "command",
+    "payload": "whistle"
+  },
+  {
+    "type": "delay",
+    "payload": 150000
+  },
+  {
+    "type": "command",
+    "payload": "whistle"
+  },
+  {
+    "type": "message",
+    "payload": "Стоп огонь, разрядить оружие!"
+  },
+  {
+    "type": "command",
+    "payload": "stop-fire-discharge"
+  },
+  {
+    "type": "command",
+    "payload": "rest"
+  },
+  {
+    "type": "delay",
+    "payload": 30000
+  },
+  {
+    "type": "message",
+    "payload": "Внимание!"
+  },
+  {
+    "type": "command",
+    "payload": "attention"
+  },
+  {
+    "type": "message",
+    "payload": "Заряжай!"
+  },
+  {
+    "type": "command",
+    "payload": "charge"
+  },
+  {
+    "type": "delay",
+    "payload": 30000
+  },
+  {
+    "type": "message",
+    "payload": "Вторая полусерия - огонь!"
+  },
+  {
+    "type": "command",
+    "payload": "fire"
+  },
+  {
+    "type": "command",
+    "payload": "whistle"
+  },
+  {
+    "type": "delay",
+    "payload": 150000
+  },
+  {
+    "type": "command",
+    "payload": "whistle"
+  },
+  {
+    "type": "message",
+    "payload": "Стоп огонь, разрядить оружие!"
+  },
+  {
+    "type": "command",
+    "payload": "stop-fire-discharge"
+  },
+  {
+    "type": "exit"
+  }
+]

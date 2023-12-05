@@ -4,18 +4,6 @@
   },
   {
     "type": "message",
-    "payload": "Стрелки на линию огня!"
-  },
-  {
-    "type": "command",
-    "payload": "move-on"
-  },
-  {
-    "type": "delay",
-    "payload": 60000
-  },
-  {
-    "type": "message",
     "payload": "Внимание!"
   },
   {
@@ -104,7 +92,7 @@
   },
   {
     "type": "delay",
-    "payload": 1500000
+    "payload": 150000
   },
   {
     "type": "command",
@@ -117,5 +105,8 @@
   {
     "type": "command",
     "payload": "stop-fire-discharge"
+  },
+  {
+    "type": "exit"
   }
 ]
