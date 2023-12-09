@@ -11,7 +11,6 @@ import course2Sequence from './flows/course-2.json'
 const countdownStart = 30
 const restMaxTime = 30
 const courseMaxTime = 150
-const rangingMaxTime = 600
 
 function leftPad(value) {
   if (value < 10) {
@@ -40,8 +39,6 @@ function setTitle(title, time) {
 
 function App() {
   const [track, setTrack] = useState('')
-  const [rangingStarted, setRangingStarted] = useState(0)
-  const [rangingTime, setRangingTime] = useState(0)
   const [countdownStarted, setCountdownStarted] = useState(0)
   const [countdownTime, setCountdownTime] = useState(0)
   const [courseStarted, setCourseStarted] = useState(0)
@@ -58,42 +55,11 @@ function App() {
     setTitle('')
     setTrack('')
     shutUp()
-    setRangingStarted(0)
     setCountdownStarted(0)
     setIntermediateRestStarted(0)
     setFinalRestStarted(0)
     setCourseStarted(0)
     setCourseNo(0)
-  }
-
-  useEffect(() => {
-    if (!rangingStarted) {
-      return
-    }
-    function tick() {
-      const time = Math.floor((now() - rangingStarted) / 1000)
-      setRangingTime(time)
-      setTitle('Пристрелка', leftPad(minutes(time)) + ':' + leftPad(seconds(time)))
-      if (time >= rangingMaxTime) {
-        stopRanging()
-      }
-    }
-    const timer = setInterval(tick, 100)
-    tick()
-    return () => {
-      clearInterval(timer)
-    }
-  }, [rangingStarted]) // eslint-disable-line
-
-  function startRanging() {
-    resetAll()
-    speak('start-ranging')
-    setRangingStarted(now())
-  }
-
-  function stopRanging() {
-    resetAll()
-    speak('stop-ranging')
   }
 
   useEffect(() => {
@@ -280,7 +246,7 @@ function App() {
       <Header />
       <div className="row">
         <div className="column-1">
-          <div className="section">Отсчеты новые</div>
+          <div className="section">Отсчеты</div>
           <FlowButton id="rng" flow={rangingSequence} caption={'Пристрелка'} onAbort={'stop-ranging'} />
           <FlowButton
             id="core"
@@ -289,13 +255,6 @@ function App() {
             onAbort={'stop-fire-discharge'}
           />
           <FlowButton id="core" flow={course2Sequence} caption={'Две полусерии'} onAbort={'stop-fire-discharge'} />
-
-          <div className="section">Отсчеты</div>
-          <RigidButton active={rangingStarted} caption="Пристрелка" onClick={startRanging} onCancel={stopRanging}>
-            <div className="indicator">
-              {leftPad(minutes(rangingTime))}:{leftPad(seconds(rangingTime))}
-            </div>
-          </RigidButton>
           <RigidButton
             active={courseNo === 1 && (countdownStarted || courseStarted)}
             caption="Зачет: первая полусерия"
