@@ -28,7 +28,7 @@
   },
   {
     "type": "command",
-    "payload": "fire"
+    "payload": "start"
   },
   {
     "type": "command",
@@ -36,7 +36,12 @@
   },
   {
     "type": "delay",
-    "payload": 150000
+    "payload": 150000,
+    "markers": {
+      "60000": "1m",
+      "120000": "2m",
+      "140000": "10s"
+    }
   },
   {
     "type": "command",
@@ -49,6 +54,10 @@
   {
     "type": "command",
     "payload": "stop-fire-discharge"
+  },
+  {
+    "type": "message",
+    "payload": "Отдых между полусериями"
   },
   {
     "type": "command",
@@ -84,7 +93,7 @@
   },
   {
     "type": "command",
-    "payload": "fire"
+    "payload": "start"
   },
   {
     "type": "command",
@@ -92,7 +101,12 @@
   },
   {
     "type": "delay",
-    "payload": 150000
+    "payload": 150000,
+    "markers": {
+      "60000": "1m",
+      "120000": "2m",
+      "140000": "10s"
+    }
   },
   {
     "type": "command",

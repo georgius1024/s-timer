@@ -62,8 +62,6 @@ function FlowButton({ id, caption, flow, onAbort }) {
         // console.log('terminated')
         setShow(false)
       })
-      // controller.on('node', (node) => console.log(node.type))
-      // controller.on('run', () => console.log('run'))
       controller.on('message', setMessage)
       controller.on('shutup', shutUp)
       controller.on('command', (command, next) => {
@@ -71,6 +69,9 @@ function FlowButton({ id, caption, flow, onAbort }) {
       })
       controller.on('timer', ({ passed }) => {
         setPassed(passed)
+      })
+      controller.on('marker', (command) => {
+        speak(command)
       })
     }
   }, [controller])

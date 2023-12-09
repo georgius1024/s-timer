@@ -3,6 +3,7 @@ const tracks = [
   '10s',
   '2m',
   'fire',
+  'start',
   'stop-fire-discharge',
   'charge',
   'fill-up',

@@ -4,21 +4,34 @@ function Controller(flow = [], timerInterval = 100) {
   const bus = new EventEmitter()
 
   const timerEvent = () => {
+    const passed = +this.currentNode.payload - this.left
     bus.emit('timer', {
       total: +this.currentNode.payload,
       left: this.left,
-      passed: +this.currentNode.payload - this.left
+      passed
     })
+    if (this.markers) {
+      const nearestMarker = Object.entries(this.markers).at(0)
+      if (nearestMarker) {
+        const [time, marker] = nearestMarker
+        if (parseInt(time) <= passed) {
+          bus.emit('marker', marker)
+          delete this.markers[time]
+        }
+      }
+    }
   }
   const startNode = (node) => {
     this.currentNode = node
     bus.emit('node', node)
     delete this.left
+    delete this.markers
     delete this.message
     delete this.command
     switch (node.type) {
       case 'delay':
         this.left = +node.payload
+        this.markers = node.markers
         timerEvent()
         break
       case 'shutup':
