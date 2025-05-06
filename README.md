@@ -7,4 +7,5 @@
 https://fir-timer-updated.web.app
 
 Синтезатор https://textspeechmp3.com/
-пресет samokh
+пресет Anton
+

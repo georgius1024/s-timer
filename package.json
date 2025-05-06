@@ -13,7 +13,9 @@
   },
   "scripts": {
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d build",
+    "deploy": "firebase deploy --only hosting",
+    "predeploy:gh": "npm run build",
+    "deploy:gh": "gh-pages -d build",
     "start": "react-scripts start",
     "dev": "react-scripts start",
     "build": "react-scripts build",
@@ -38,5 +40,8 @@
   "devDependencies": {
     "gh-pages": "^2.2.0",
     "node-sass": "^4.13.1"
+  },
+  "engines": {
+    "node": "14"
   }
 }

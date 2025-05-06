@@ -78,10 +78,10 @@ function PhaseButton({ interval = 100, onComplete, id, caption }) {
     }
 
     setTimeout(() => {
-      setOnHold(onHold => {
+      setOnHold((onHold) => {
         if (onHold) {
           shutUp()
-          speak('charge')
+          speak('prepare')
           setCountdownIsStarted(new Date().valueOf())
         }
         return false
@@ -96,7 +96,7 @@ function PhaseButton({ interval = 100, onComplete, id, caption }) {
   }
   function canPlay() {
     shutUp()
-    speak('charge')
+    speak('prepare')
     setCountdownIsStarted(new Date().valueOf())
   }
   const classes = [

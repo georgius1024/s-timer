@@ -16,7 +16,7 @@
   },
   {
     "type": "command",
-    "payload": "charge"
+    "payload": "prepare"
   },
   {
     "type": "delay",
@@ -81,7 +81,7 @@
   },
   {
     "type": "command",
-    "payload": "charge"
+    "payload": "prepare"
   },
   {
     "type": "delay",

@@ -1,5 +1,22 @@
 {
   "projects": {
-    "default": "fir-timer-updated"
+    "prod": "fir-timer-updated"
+  },
+  "targets": {},
+  "etags": {},
+  "hosting": {
+    "site": "fir-timer-updated",
+    "public": "build",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
   }
 }

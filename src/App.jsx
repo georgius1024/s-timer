@@ -133,14 +133,14 @@ function App() {
 
   function startFirstCourse() {
     resetAll()
-    speak('charge')
+    speak('prepare')
     setCourseNo(1)
     setCountdownStarted(now())
   }
 
   function startSecondCourse() {
     resetAll()
-    speak('charge')
+    speak('prepare')
     setCourseNo(2)
     setCountdownStarted(now())
   }
@@ -162,7 +162,7 @@ function App() {
         clearInterval(timer)
         speak('attention').then(() => {
           setIntermediateRestStarted(0)
-          speak('charge').then(() => {
+          speak('prepare').then(() => {
             setCourseNo(2)
             setCountdownStarted(now())
           })
@@ -221,12 +221,13 @@ function App() {
     'start-ranging': 'Огонь пристрелка',
     'stop-ranging': 'Стоп пристрелка',
     'move-on': 'Стрелки на линию огня!',
-    charge: 'Заряжай!',
+    prepare: 'Приготовиться к стрельбе!',
     fire: 'Огонь!',
     'stop-fire-discharge': 'Стоп огонь, разрядить оружие!',
     rest: 'Время отдыха',
     'safe-free': 'Рубеж свободен',
-    'fill-up': 'Заправка воздухом'
+    'fill-up': 'Заправка воздухом',
+    charge: 'Заряжай!'
   }
   const trackButtons = Object.entries(buttons).map(([key, value]) => {
     function onClick() {
