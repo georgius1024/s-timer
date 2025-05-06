@@ -308,6 +308,20 @@ function App() {
           {trackButtons}
         </div>
       </div>
+      <div className="footer">
+        <a
+          href="#"
+          onClick={(e) => {
+            e.preventDefault()
+            if (navigator.serviceWorker?.controller) {
+              navigator.serviceWorker.controller.postMessage({ type: 'SKIP_WAITING' })
+            }
+            window.location.reload(true)
+          }}
+        >
+          🔁 Обновить
+        </a>
+      </div>
     </div>
   )
 }
