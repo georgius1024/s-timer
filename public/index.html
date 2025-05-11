@@ -16,8 +16,6 @@
   <noscript>You need to enable JavaScript to run this app.</noscript>
   <div id="root"></div>
 
-  <!-- Временно отключаем регистрацию Service Worker -->
-  <!--
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', function () {
@@ -37,32 +35,6 @@
       });
     } else {
       console.log('Service Worker is not supported by browser.');
-    }
-  </script>
-  -->
-
-  <script>
-    if ('serviceWorker' in navigator && !localStorage.getItem('sw-cleaned')) {
-      localStorage.setItem('sw-cleaned', '1');
-
-      navigator.serviceWorker.getRegistrations().then(function (registrations) {
-        for (let registration of registrations) {
-          registration.unregister().then(() => {
-            console.log('Service Worker unregistered');
-          });
-        }
-      });
-
-      if (window.caches) {
-        caches.keys().then(function (keyList) {
-          return Promise.all(keyList.map(function (key) {
-            return caches.delete(key);
-          }));
-        }).then(() => {
-          console.log('All caches cleared');
-          window.location.reload(true);
-        });
-      }
     }
   </script>
 </body>

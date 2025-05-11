@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-
+import packageJson from '../package.json'
 import RigidButton from './RigidButton'
 import FlowButton from './FlowButton'
 import Header from './header'
@@ -11,6 +11,11 @@ import course2Sequence from './flows/course-2.json'
 const countdownStart = 30
 const restMaxTime = 30
 const courseMaxTime = 150
+
+const version = packageJson.version
+const storedVersion = localStorage.getItem('version')
+
+const isNewVersion = storedVersion !== version
 
 function leftPad(value) {
   if (value < 10) {
@@ -308,20 +313,26 @@ function App() {
           {trackButtons}
         </div>
       </div>
-      <div className="footer">
-        <a
-          href="#"
-          onClick={(e) => {
-            e.preventDefault()
-            if (navigator.serviceWorker?.controller) {
-              navigator.serviceWorker.controller.postMessage({ type: 'SKIP_WAITING' })
-            }
-            window.location.reload(true)
-          }}
-        >
-          🔁 Обновить
-        </a>
-      </div>
+      {isNewVersion && (
+        <div className="footer">
+          <a
+            href="/"
+            onClick={(e) => {
+              e.preventDefault()
+              if (navigator.serviceWorker?.controller) {
+                navigator.serviceWorker.controller.postMessage({ type: 'SKIP_WAITING' })
+              }
+              localStorage.setItem('version', version)
+              window.location.reload(true)
+            }}
+          >
+            <span role="img" aria-label="refresh">
+              🔁
+            </span>{' '}
+            Обновить
+          </a>
+        </div>
+      )}
     </div>
   )
 }

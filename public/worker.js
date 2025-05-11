@@ -1,42 +1,44 @@
-var CACHE_NAME = 'pwa-task-manager'
+var CACHE_NAME = 'pwa-task-manager-v1'
 var urlsToCache = ['/', '/static/media']
 
-// Install a service worker
+// Install
 self.addEventListener('install', (event) => {
-  // Perform install steps
   event.waitUntil(
-    caches.open(CACHE_NAME).then(function (cache) {
+    caches.open(CACHE_NAME).then((cache) => {
       console.log('Opened cache')
       return cache.addAll(urlsToCache)
     })
   )
 })
 
-// Cache and return requests
-self.addEventListener('fetch', (event) => {
-  event.respondWith(
-    caches.match(event.request).then(function (response) {
-      // Cache hit - return response
-      if (response) {
-        return response
-      }
-      return fetch(event.request)
-    })
-  )
-})
-
-// Update a service worker
+// Activate
 self.addEventListener('activate', (event) => {
-  var cacheWhitelist = ['pwa-task-manager']
+  const cacheWhitelist = [CACHE_NAME]
   event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
+    caches.keys().then((cacheNames) =>
+      Promise.all(
         cacheNames.map((cacheName) => {
-          if (cacheWhitelist.indexOf(cacheName) === -1) {
+          if (!cacheWhitelist.includes(cacheName)) {
             return caches.delete(cacheName)
           }
         })
       )
+    )
+  )
+})
+
+// Fetch
+self.addEventListener('fetch', (event) => {
+  event.respondWith(
+    caches.match(event.request).then((response) => {
+      return response || fetch(event.request)
     })
   )
+})
+
+// Message from client
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting()
+  }
 })
