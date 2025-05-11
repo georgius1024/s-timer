@@ -1,3 +1,5 @@
+import audioData from '../src/audio_base64.json'
+
 const tracks = [
   '1m',
   '10s',
@@ -46,45 +48,34 @@ function speak(phrase) {
   })
 }
 
-function preload() {
-  tracks.forEach((track) => {
-    const audio = document.createElement('audio')
-    audio.setAttribute('id', 'track_' + track)
-    audio.style.display = 'none'
-    audio.controls = false
+// async function speak(phrase) {
+//   const audio = document.getElementById('track_' + phrase)
+//   if (!audio) {
+//     await preloadAndUnlockAudio()
+//   }
+//   return play(phrase)
+// }
 
-    const sourceOgg = document.createElement('source')
-    sourceOgg.src = require('./assets/audio/' + track + '.ogg')
-    sourceOgg.type = 'audio/ogg'
-
-    const sourceMp3 = document.createElement('source')
-    sourceMp3.src = require('./assets/audio/' + track + '.mp3')
-    sourceMp3.type = 'audio/mpeg'
-
-    audio.appendChild(sourceOgg)
-    audio.appendChild(sourceMp3)
-    document.body.appendChild(audio)
-  })
-}
-
-function unlockAudio() {
+function preloadAndUnlockAudio() {
   return new Promise((resolve, reject) => {
     const promises = tracks.map((track) => {
-      const audio = document.getElementById('track_' + track)
-      if (!audio) return Promise.resolve() // Пропускаем, если трек не найден
+      const audio = document.createElement('audio')
+      audio.setAttribute('id', 'track_' + track)
+      audio.style.display = 'none'
+      audio.controls = false
+      audio.preload = 'metadata'
 
-      return new Promise((res) => {
-        audio.muted = true
-        audio
-          .play()
-          .then(() => {
-            audio.pause()
-            audio.currentTime = 0
-            audio.muted = false
-            res()
-          })
-          .catch(() => res()) // Игнорируем ошибки, чтобы не прерывать остальные треки
-      })
+      const sourceOgg = document.createElement('source')
+      sourceOgg.src = audioData[track]?.ogg || ''
+      sourceOgg.type = 'audio/ogg'
+
+      const sourceMp3 = document.createElement('source')
+      sourceMp3.src = audioData[track]?.mp3 || ''
+      sourceMp3.type = 'audio/mpeg'
+
+      audio.appendChild(sourceOgg)
+      audio.appendChild(sourceMp3)
+      document.body.appendChild(audio)
     })
 
     Promise.all(promises)
@@ -93,6 +84,5 @@ function unlockAudio() {
   })
 }
 
-preload()
-
-export { speak, shutUp, unlockAudio }
+// Экспортируйте функции
+export { speak, shutUp, preloadAndUnlockAudio }

@@ -3,7 +3,7 @@ import packageJson from '../package.json'
 import RigidButton from './RigidButton'
 import FlowButton from './FlowButton'
 import Header from './header'
-import { shutUp, speak, unlockAudio } from './speaker'
+import { shutUp, speak, preloadAndUnlockAudio } from './speaker'
 import rangingSequence from './flows/ranging.json'
 import course1Sequence from './flows/course-1.json'
 import course2Sequence from './flows/course-2.json'
@@ -44,6 +44,7 @@ function setTitle(title, time) {
 
 function App() {
   const [locked, setLocked] = useState(true)
+  const [unlocking, setUnlocking] = useState(false)
   const [track, setTrack] = useState('')
   const [countdownStarted, setCountdownStarted] = useState(0)
   const [countdownTime, setCountdownTime] = useState(0)
@@ -158,8 +159,10 @@ function App() {
 
   function unlock() {
     if (locked) {
-      unlockAudio().then(() => {
+      setUnlocking(true)
+      preloadAndUnlockAudio().then(() => {
         setLocked(false)
+        setUnlocking(false)
       })
     }
   }
@@ -268,6 +271,19 @@ function App() {
       </div>
     )
   }
+
+  if (unlocking) {
+    return (
+      <div className="App">
+        <Header />
+        <div className="locked">
+          <h1>Разблокировка...</h1>
+          <p>Пожалуйста, подождите</p>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="App">
       <Header />
