@@ -45,7 +45,7 @@ function setTitle(title, time) {
 function App() {
   const [locked, setLocked] = useState(true)
   const [unlocking, setUnlocking] = useState(false)
-  const [track, setTrack] = useState('')
+  const [activeTrack, setActiveTrack] = useState('')
   const [countdownStarted, setCountdownStarted] = useState(0)
   const [countdownTime, setCountdownTime] = useState(0)
   const [courseStarted, setCourseStarted] = useState(0)
@@ -60,7 +60,7 @@ function App() {
 
   function resetAll() {
     setTitle('')
-    setTrack('')
+    setActiveTrack('')
     shutUp()
     setCountdownStarted(0)
     setIntermediateRestStarted(0)
@@ -247,17 +247,25 @@ function App() {
     charge: 'Заряжай!'
   }
   const trackButtons = Object.entries(buttons).map(([key, value]) => {
-    function onClick() {
+    const onClick = async () => {
+      if (activeTrack) return
       resetAll()
-      setTrack(() => {
-        speak(key).then(() => setTrack(''))
-        return key
-      })
+      setActiveTrack(key)
+      try {
+        shutUp()
+        await speak(key)
+      } catch (error) {
+        console.error(`Error playing track ${key}:`, error)
+      }
+      setActiveTrack('')
     }
-    function onCancel() {
+
+    const onCancel = async () => {
+      shutUp()
       resetAll()
+      setActiveTrack('')
     }
-    return <RigidButton key={key} active={key === track} caption={value} onClick={onClick} onCancel={onCancel} />
+    return <RigidButton key={key} active={key === activeTrack} caption={value} onClick={onClick} onCancel={onCancel} />
   })
 
   if (locked) {
