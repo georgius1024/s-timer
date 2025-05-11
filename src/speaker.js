@@ -48,14 +48,6 @@ function speak(phrase) {
   })
 }
 
-// async function speak(phrase) {
-//   const audio = document.getElementById('track_' + phrase)
-//   if (!audio) {
-//     await preloadAndUnlockAudio()
-//   }
-//   return play(phrase)
-// }
-
 function preloadAndUnlockAudio() {
   return new Promise((resolve, reject) => {
     const promises = tracks.map((track) => {
@@ -76,6 +68,7 @@ function preloadAndUnlockAudio() {
       audio.appendChild(sourceOgg)
       audio.appendChild(sourceMp3)
       document.body.appendChild(audio)
+      return true
     })
 
     Promise.all(promises)
