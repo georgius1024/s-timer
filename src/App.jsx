@@ -3,7 +3,7 @@ import packageJson from '../package.json'
 import RigidButton from './RigidButton'
 import FlowButton from './FlowButton'
 import Header from './header'
-import { shutUp, speak } from './speaker'
+import { shutUp, speak, unlockAudio } from './speaker'
 import rangingSequence from './flows/ranging.json'
 import course1Sequence from './flows/course-1.json'
 import course2Sequence from './flows/course-2.json'
@@ -43,6 +43,7 @@ function setTitle(title, time) {
 }
 
 function App() {
+  const [locked, setLocked] = useState(true)
   const [track, setTrack] = useState('')
   const [countdownStarted, setCountdownStarted] = useState(0)
   const [countdownTime, setCountdownTime] = useState(0)
@@ -155,6 +156,14 @@ function App() {
     speak('stop-fire-discharge')
   }
 
+  function unlock() {
+    if (locked) {
+      unlockAudio().then(() => {
+        setLocked(false)
+      })
+    }
+  }
+
   useEffect(() => {
     if (!intermediateRestStarted) {
       return
@@ -247,6 +256,18 @@ function App() {
     }
     return <RigidButton key={key} active={key === track} caption={value} onClick={onClick} onCancel={onCancel} />
   })
+
+  if (locked) {
+    return (
+      <div className="App" onMouseDown={unlock} onTouchStart={unlock}>
+        <Header />
+        <div className="locked">
+          <h1>Аудио заблокировано</h1>
+          <p>Нажмите на экран, чтобы разблокировать</p>
+        </div>
+      </div>
+    )
+  }
   return (
     <div className="App">
       <Header />

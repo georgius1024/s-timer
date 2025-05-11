@@ -17,7 +17,7 @@ export default function Button({ track, caption }) {
   function mousePressed() {
     setOnHold(true)
     setTimeout(() => {
-      setOnHold(onHold => {
+      setOnHold((onHold) => {
         console.log(onHold)
         if (onHold) {
           play()
@@ -27,7 +27,6 @@ export default function Button({ track, caption }) {
     }, 300)
   }
   function mouseOff() {
-    console.log(222222222222222)
     setOnHold(false)
   }
   function ended() {
