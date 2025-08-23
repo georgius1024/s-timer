@@ -1,5 +1,5 @@
 var CACHE_NAME = 'pwa-task-manager-v1'
-var urlsToCache = ['/', '/static/media']
+var urlsToCache = ['/v1/', '/v1/static/media']
 
 // Install
 self.addEventListener('install', (event) => {
